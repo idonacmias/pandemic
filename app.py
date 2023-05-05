@@ -1,10 +1,20 @@
 from flask import Flask
+from pymongo import MongoClient
+
 
 app = Flask(__name__)
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+client = MongoClient('localhost', 27017)
+
+db = client.flask_db
+todos = db.todos
+
+
+
+
+@app.route("/player")
+def player():
+    return {'name':'bob'}
 
 
 
