@@ -5,6 +5,8 @@ class Bord:
 	def __init__(self, cities, num_player, difficulty):
 		self.infaction_rate = 2
 		self.outbreack = 0
+		self.research_stations_cuonter = 6
+		self.research_stations_location = ["Atlanta"]
 		self.cure_blue = 0
 		self.cure_red = 0
 		self.cure_yellow = 0
