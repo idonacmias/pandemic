@@ -24,8 +24,8 @@ class Bord:
 
 
 
-		for player in self.players:
-			print(player)
+		# for player in self.players:
+		# 	print(player)
 		# print(self.cure_deck)
 		# print(self.infaction_deck)
 		# print(cities[self.infaction_deck[0]])

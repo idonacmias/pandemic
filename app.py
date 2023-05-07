@@ -15,6 +15,7 @@ def game_status(bord):
 		print('you won!')
 		return 2
 
+	return 0
 
 def is_disease_cudes_left(bord):
 	return bord.disease_cudes_blue <= 0 and bord.disease_cudes_red <= 0 and bord.disease_cudes_yellow <= 0 and bord.disease_cudes_black <= 0
