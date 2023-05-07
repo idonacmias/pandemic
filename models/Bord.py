@@ -9,6 +9,10 @@ class Bord:
 		self.cure_red = 0
 		self.cure_yellow = 0
 		self.cure_black = 0
+		self.disease_cudes_blue = 24
+		self.disease_cudes_red = 24
+		self.disease_cudes_yellow = 24
+		self.disease_cudes_black = 24
 		self.cities = cities
 		self.infaction_deck = cities
 		self.temp_player_cards = []
