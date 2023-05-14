@@ -18,12 +18,7 @@ def run_game(bord):
 				bord.discard_cure_deck.append('epidemic')
 
 		corent_player.cards = corent_player.cards + new_cure_cards
-		if len(corent_player.cards) > 7:
-			print(bord.discard_cure_deck)
-			discard_temp = corent_player.discard()
-			bord.discard_cure_deck += discard_temp
-			print(bord.discard_cure_deck)
-
+		hande_limt(bord, corent_player)
 		bord.infect_cities()
 		input('next turn')
 
@@ -43,3 +38,10 @@ def is_disease_cudes_left(bord):
 
 def is_four_vaccines_found(bord):
 	return bord.cure_blue > 0 and bord.cure_red > 0 and bord.cure_yellow > 0 and bord.cure_black > 0
+
+def hande_limt(bord, corent_player)
+	if len(corent_player.cards) > 7:
+		print(bord.discard_cure_deck)
+		discard_temp = corent_player.discard()
+		bord.discard_cure_deck += discard_temp
+		print(bord.discard_cure_deck)
