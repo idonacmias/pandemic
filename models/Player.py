@@ -1,3 +1,4 @@
+from .constances import HAND_LIMIT
 class Player:
 
 	def __init__(self):
@@ -15,13 +16,13 @@ class Player:
 		print(f'Player {self.name} do an action!')
 
 	def discard(self):
-		discard = []
-		self.display_cards()
-		for _ in range(len(self.cards) - 7):
+		discard_pile_temp = []
+		while len(self.cards) > HAND_LIMIT:
+			self.display_cards()
 			card_num = self.choose_a_card()
-			discard.append(self.cards.pop(card_num))
+			discard_pile_temp.append(self.cards.pop(card_num))
 
-		return discard
+		return discard_pile_temp
 
 	def choose_a_card(self):
 		print('choose a card:')
