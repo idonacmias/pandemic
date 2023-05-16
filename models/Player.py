@@ -64,5 +64,5 @@ class Player:
 		print('not a valid card')
 		return self.choose_a_card()
 
-		def display_cards(self):
-			print(''.join([f"{i}) {card['name']}: {card['color'].value} \n" for i, card in enumerate(self.cards)]))
+	def display_cards(self):
+		print(''.join([f"{i}) {card['name']}: {card['color'].value} \n" for i, card in enumerate(self.cards)]))
