@@ -6,7 +6,7 @@ def run_game(bord):
 		corent_player = bord.players[player_cunter]
 		print(f'corent_player: {corent_player.name}')
 		for _ in range(PLAYER_ACTIONS_PER_TURN):
-			corent_player.action()
+			corent_player.do_action()
 		
 		new_cure_cards = bord.give_player_cards(2)
 		chack_epidemic(bord, new_cure_cards)
