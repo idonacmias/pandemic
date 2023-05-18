@@ -1,9 +1,11 @@
 from random import shuffle, randrange 
 
-from models.Cities import Cities
 from models.Player import Player
+from models.InfectionDeck import InfectionDeck
+from models.CureDeck import CureDeck
+from models.constances import PLAYER_ACTIONS_PER_TURN, MAX_OUTBREACK, STARTER_CARDS, CURE_CARDS_PER_TURN
 
-from models.constances import STARTER_CARDS
+
 
 class Bord:
 	def __init__(self, cities, num_player, difficulty):
@@ -20,66 +22,82 @@ class Bord:
 		self.disease_cudes_red = 24
 		self.disease_cudes_yellow = 24
 		self.disease_cudes_black = 24
-		self.cities = cities
-		self.infaction_deck = Bord._generate_infaction_deck(cities)
-		self.discard_infaction_deck = []
-		self.cure_deck = Bord._generate_cure_deck(cities)
-		self.discard_cure_deck = []
 		self.players = [Player() for _ in range(num_player)]
-		self._deal_first_ruond_cards(num_player)
-		self._insert_epidemic(difficulty)
+		self.cities = cities
+		self.infection_deck = InfectionDeck(cities)
+		self.cure_deck = CureDeck(cities, num_player, difficulty, self.players)
+		self.run_game(num_player)
 
 	def __str__(self):
-		my_str = []
-		for player in self.players:
-			my_str.append(player)
-	
-		my_str.append(self.cure_deck)
-		my_str.append(self.infaction_deck)
-		# my_str.append(self.cities[self.infaction_deck[0]])
-		string = str(my_str)
+		players = "\n\n".join([str(player) for player in self.players])
+		string = f'''
+cities:\n{self.cities} 
+\ncure_deck:\n{self.cure_deck}
+\ninfection_deck:\n{self.infection_deck}
+\nplayers:\n{players}'''
 		return string
 
-	@staticmethod
-	def _generate_infaction_deck(cities):
-		infaction_deck = [city for city in cities]
-		shuffle(infaction_deck)
-		return infaction_deck
-	
-	@staticmethod
-	def _generate_cure_deck(cities):
-		cure_deck = [Bord._create_cure_card(card) for card in cities.values()]
-		shuffle(cure_deck)
-		return cure_deck
+	def run_game(self, num_player):
+		print(f'bord: \n{self}')
+		input()
+		player_cunter = 0
+		while self.game_status() == 2:
+			corent_player = self.players[player_cunter]
+			print(f'corent_player: {corent_player.name}')
+			for _ in range(PLAYER_ACTIONS_PER_TURN):
+				corent_player.do_action(self.cities)
+
+			self.player_draw_cards(corent_player)
+			self.infect()
+			player_cunter = Bord.switch_player(num_player, player_cunter)
+			input('next turn')
+
+	def game_status(self):
+		if self.is_disease_cudes_left() or self.outbreack >= MAX_OUTBREACK or len(self.cure_deck.deck) < 0:
+			print('you lose!')
+			return 0
+
+		if self.is_four_vaccines_found():
+			print('you won!')
+			return 1
+
+		return 2
+
+	def is_disease_cudes_left(self):
+		return self.disease_cudes_blue <= 0 and self.disease_cudes_red <= 0 and self.disease_cudes_yellow <= 0 and self.disease_cudes_black <= 0
+
+	def is_four_vaccines_found(self):
+		return self.cure_blue > 0 and self.cure_red > 0 and self.cure_yellow > 0 and self.cure_black > 0
+
+	def player_draw_cards(self, corent_player):
+			new_cure_cards = self.cure_deck.give_player_cards(CURE_CARDS_PER_TURN)
+			self.chack_epidemic(new_cure_cards)
+			corent_player.cards += new_cure_cards
+			self.hande_limt(corent_player)
+
+	def chack_epidemic(self, new_cure_cards, secend=False):
+		if 'epidemic' in new_cure_cards:
+			new_cure_cards.remove('epidemic')
+			self.infection_deck.handel_epidemic()
+			self.cure_deck.discard.append('epidemic')
+			self.chack_epidemic(new_cure_cards, secend=True)
+
+		return new_cure_cards 		
+
+	def hande_limt(self, corent_player):
+		self.cure_deck.discard += corent_player.discard()
 
 	@staticmethod
-	def _create_cure_card(card):
-		return {'name' : card.name, 'color' : card.color, 'population' : card.population}
-
-	def _deal_first_ruond_cards(self, num_player):
-		num_cards_for_player = STARTER_CARDS[num_player - 2]
-		for player in self.players:
-			player.cards = player.cards + self.give_player_cards(num_cards_for_player)
-
-	def give_player_cards(self, num_cards):
-		self.cure_deck, cards = self.cure_deck[num_cards:], self.cure_deck[:num_cards]
-		return cards
-
-	def _insert_epidemic(self, difficulty):
-		split_deack = len(self.cure_deck) // difficulty
-		for i in range(difficulty):
-			position = randrange(split_deack) + (i * split_deack) 
-			self.cure_deck.insert(position, "epidemic")
-
-
-
-	def handel_epidemic(self):
-		print('Bord handel_epidemic')
+	def switch_player(num_player, player_cunter):
+		if player_cunter == num_player - 1:
+			player_cunter = 0
 		
-	def infect_cities(self):
-		print('Bord infect cities')
-		infected_cities = self.infaction_deck[:self.infaction_rate]
-		for city_name in infected_cities:
-			city = self.cities[city_name]
-			print(city.color)
+		else:
+			player_cunter += 1
+		
+		return player_cunter		
 
+	def infect(self):
+		print('infect')
+		infected_cards = self.infection_deck.draw_cards()
+		print(infected_cards)

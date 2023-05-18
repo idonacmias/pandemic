@@ -1,4 +1,4 @@
-from .constances import HAND_LIMIT
+from .constances import HAND_LIMIT, NUMBER_CARDS_FOR_CURE
 class Player:
 
 	def __init__(self):
@@ -11,12 +11,13 @@ class Player:
 				   		'build_a_research_station' : self.build_a_research_station}
 
 	def __str__(self):
-		return f'''{self.name} in {self.location} \n holds {self.cards}'''
+		cards = "\n".join([str(i) + ')' + card['name'] for i, card in enumerate(self.cards)])
+		return f'''{self.name} in {self.location} \nholds:\n{cards}'''
 
-	def do_action(self):
+	def do_action(self, cities):
 		my_action = self.choose_actions()
-		self.actions[my_action]()
-		print(f'Player {self.name} do an action!')
+		self.actions[my_action](cities)
+		print(f'Player {self.name} did an action!')
 
 	
 	def choose_actions(self): 
@@ -30,16 +31,37 @@ class Player:
 		print('not a valid action')
 		return self.choose_actions()
 
-	def discover_cure(self):
+	def discover_cure(self, cities):
 		print('discover_cure')
+		print(self.cards)
+		if len(self.cards) > NUMBER_CARDS_FOR_CURE:
+			cards_for_cure = self.choose_cards(NUMBER_CARDS_FOR_CURE)
+			
+			print(self.location)
+			print(cards_for_cure, '\n', self.cards)
 
-	def share_knowlege(self):
+		else:
+			print('not enugh cards')
+			self.choose_actions()
+
+	def choose_cards(self, num_of_cards):
+		chosen_cards = []
+		while num_of_cards > 0:
+			self.display_cards()
+			card_num = self.choose_a_card()
+			chosen_cards.append(self.cards.pop(card_num))
+			num_of_cards -= 1
+	
+		return chosen_cards
+
+
+	def share_knowlege(self, cities):
    		print('share_knowlege')
 
-	def treat_disease(self):
+	def treat_disease(self, cities):
    		print('treat_disease')
 
-	def build_a_research_station(self):
+	def build_a_research_station(self, cities):
    		print('build_a_research_station')
 
 

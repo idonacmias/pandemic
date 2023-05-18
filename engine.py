@@ -1,6 +1,8 @@
 from models.constances import PLAYER_ACTIONS_PER_TURN, MAX_OUTBREACK
 
 def run_game(bord):
+	print(f'bord: \n{bord}')
+	input()
 	player_cunter = 0
 	num_player = len(bord.players)
 	while game_status(bord) == 2:
@@ -13,12 +15,12 @@ def run_game(bord):
 		chack_epidemic(bord, new_cure_cards)
 		corent_player.cards = corent_player.cards + new_cure_cards
 		hande_limt(bord, corent_player)
-		bord.infect_cities()
+		bord.infect()
 		player_cunter = switch_player(num_player, player_cunter)
 		input('next turn')
 
 def game_status(bord):
-	if is_disease_cudes_left(bord) or bord.outbreack >= MAX_OUTBREACK or len(bord.cure_deck) < 0:
+	if is_disease_cudes_left(bord) or bord.outbreack >= MAX_OUTBREACK or len(bord.cure_deck.deck) < 0:
 		print('you lose!')
 		return 0
 
