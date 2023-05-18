@@ -14,7 +14,7 @@ class CureDeck:
 		self.discard = []
 
 	def __str__(self):
-		string = "\n".join([''.join(name for name in card.values()) for i, card in enumerate(self.deck)])
+		string = "\n".join([str(i) + ')' + str(card['name']) if card != 'epidemic' else str(i) + ')' + card for i, card in enumerate(self.deck)])
 		return string
 
 	@staticmethod
