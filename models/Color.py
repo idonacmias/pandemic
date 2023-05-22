@@ -1,8 +1,3 @@
-from enum import Enum, auto
+from enum import IntEnum
 
-
-class Color(Enum):
-	BLUE = 'BLUE'
-	YALLOW = 'YALLOW'
-	BLACK = 'BLACK'
-	RED = 'RED'
+Color = IntEnum('Color', ['BLUE', 'YALLOW', 'BLACK', 'RED'])
