@@ -19,32 +19,36 @@ class City:
     def __str__(self):
         return f'{self.name} , {self.color} \n {self.disease_cubes}'
 
-    def infect(self, color=0):
+    def infect(self, cities, disease_pool, color=0):
         if color == 0:
             color = self.color
         
-        if self.disease_cubes[color.value - 1] < MAX_CUBE_IN_CITY:
-            self.disease_cubes[color.value - 1] += 1
+        if self.disease_cubes[color - 1] < MAX_CUBE_IN_CITY:
+            self.disease_cubes[color - 1] += 1
+            disease_pool[color - 1] -= 1
 
         else:
-            self.outbreack_bool = True
-            # self.outbreack()
-            return 'outbreack'
+            self.outbreack(cities, disease_pool)
         
         print(self)
 
-    # def outbreack(self):
-    #     self.outbreack_bool = True
-    #     for city in self.roads:
-    #         if not city.outbreack_bool: 
-    #             city.infect(self.color)
+    def outbreack(self, cities, disease_pool):
+        self.outbreack_bool = True
+        print(f'{self.name} is outbreacking')
+        print(f'disses spred to {self.roads}')
+        for city_name in self.roads:
+            city = cities[city_name]
+            if not city.outbreack_bool: 
+                city.infect(cities, disease_pool, self.color)
 
-    def epidemic_infect(self):
-        if self.disease_cubes[self.color.value - 1] > 0:
+    def epidemic_infect(self, cities, disease_pool):
+        city_disease = self.disease_cubes[self.color.value - 1]
+        if city_disease + 3 > MAX_CUBE_IN_CITY:
             print('epidemic_infect!!!!!!!!!!!!')
-            self.outbreack()
+            self.outbreack(cities, disease_pool)
 
-        self.disease_cubes[self.color.value - 1] = 3
+        disease_pool[self.color.value - 1] -= city_disease - MAX_CUBE_IN_CITY
+        city_disease = 3
 
 with open("models/cities.json", "r") as json_file:
     cities = json.load(json_file)

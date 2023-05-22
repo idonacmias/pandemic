@@ -31,6 +31,7 @@ class InfectionDeck:
 		print('handel_epidemic')
 		self.infection_cunter += 1
 		infected_city = self.deck.pop(-1)
+		print(f'epedemic in {infected_city}')
 		self.discard.append(infected_city)
 		shuffle(self.discard) 
 		self.deck = self.discard + self.deck

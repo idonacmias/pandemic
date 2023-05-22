@@ -9,7 +9,6 @@ from models.constances import PLAYER_ACTIONS_PER_TURN, MAX_OUTBREACK, STARTER_CA
 
 class Bord:
 	def __init__(self, cities, num_player, difficulty):
-		difficulty += 4
 		self.infaction_rate = 2
 		self.outbreack = 0
 		self.research_stations_cuonter = 6
@@ -18,7 +17,7 @@ class Bord:
 		self.cure_red = 0
 		self.cure_yellow = 0
 		self.cure_black = 0
-		self.disease_cubes = [24] * 4
+		self.disease_pool = [24] * 4
 		self.players = [Player() for _ in range(num_player)]
 		self.corent_player = self.players[0]
 		self.cities = cities
@@ -47,10 +46,11 @@ cities:\n{cities}
 			self.player_draw_cards()
 			self.infect()
 			player_cunter = self.switch_player(num_player, player_cunter)
+			print(f'disease pool: {self.disease_pool}')
 			input('next turn')
 
 	def game_status(self):
-		if 0 in self.disease_cubes or self.outbreack >= MAX_OUTBREACK or len(self.cure_deck.deck) < 0:
+		if self.is_disease_pool_full() or self.outbreack >= MAX_OUTBREACK or len(self.cure_deck.deck) < 0:
 			print('you lose!')
 			return 0
 
@@ -59,6 +59,12 @@ cities:\n{cities}
 			return 1
 
 		return 2
+
+	def is_disease_pool_full(self):
+		for disease in self.disease_pool:
+			if disease < 1:
+				print('no disease in disease pool')
+				return True
 
 	def is_four_vaccines_found(self):
 		return self.cure_blue > 0 and self.cure_red > 0 and self.cure_yellow > 0 and self.cure_black > 0
@@ -77,8 +83,7 @@ cities:\n{cities}
 		if 'epidemic' in new_cure_cards:
 			new_cure_cards.remove('epidemic')
 			infected_card = self.infection_deck.handel_epidemic()
-			self.cities[infected_card].epidemic_infect()
-			self.disease_cubes[self.cities[infected_card].color - 1] -= 1
+			self.cities[infected_card].epidemic_infect(self.cities, self.disease_pool)
 			self.cure_deck.discard.append('epidemic')
 			self.chack_epidemic(new_cure_cards, secend=True)
 
@@ -110,5 +115,4 @@ cities:\n{cities}
 		infected_cards = self.infection_deck.draw_cards()
 		print(infected_cards)
 		for infected_card in infected_cards:
-			self.cities[infected_card].infect()
-			self.disease_cubes[self.cities[infected_card].color - 1] -= 1
+			self.cities[infected_card].infect(self.cities, self.disease_pool)
