@@ -19,6 +19,8 @@ class Bord:
 		self.cure_black = 0
 		self.disease_pool = [24] * 4
 		self.players = [Player() for _ in range(num_player)]
+		for player in self.players:
+			player.location = cities['Atlanta']
 		self.corent_player = self.players[0]
 		self.cities = cities
 		self.infection_deck = InfectionDeck(cities)
@@ -42,7 +44,7 @@ cities:\n{cities}
 		player_cunter = 0
 		while self.game_status() == 2:
 			print(f'corent_player: {self.corent_player.name}')
-			# self.player_do_actions()
+			self.player_do_actions()
 			self.player_draw_cards()
 			self.infect()
 			player_cunter = self.switch_player(num_player, player_cunter)
@@ -97,7 +99,6 @@ cities:\n{cities}
 		player_cunter = Bord.promote_cunter(num_player, player_cunter)
 		print(f'new player_cunter: {player_cunter}')
 		self.corent_player = self.players[player_cunter]
-		# print(f'corent_player: {self.corent_player}')
 		return player_cunter
 	
 	@staticmethod

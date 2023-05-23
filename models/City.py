@@ -11,6 +11,7 @@ class City:
     population : int 
     roads : list
     disease_cubes : list = field(default_factory=lambda: [0]*4)
+    resarch_station = False
     outbreack_bool = False
 
     def __post_init__(self):
@@ -45,9 +46,14 @@ class City:
         disease_pool[self.color.value - 1] -= city_disease - MAX_CUBE_IN_CITY
         city_disease = 3
 
+
+
 with open("models/cities.json", "r") as json_file:
     cities = json.load(json_file)
 
 cities = {city["name"] : City(**city) for city in cities}
 for city in cities.values():
     city.roads = [cities[city_name] for city_name in city.roads]
+
+cities['Atlanta'].resarch_station = True
+
