@@ -83,7 +83,7 @@ cities:\n{cities}
 		if 'epidemic' in new_cure_cards:
 			new_cure_cards.remove('epidemic')
 			infected_card = self.infection_deck.handel_epidemic()
-			self.cities[infected_card].epidemic_infect(self.cities, self.disease_pool)
+			self.cities[infected_card].epidemic_infect(self.disease_pool)
 			self.cure_deck.discard.append('epidemic')
 			self.chack_epidemic(new_cure_cards, secend=True)
 
@@ -115,4 +115,5 @@ cities:\n{cities}
 		infected_cards = self.infection_deck.draw_cards()
 		print(infected_cards)
 		for infected_card in infected_cards:
-			self.cities[infected_card].infect(self.cities, self.disease_pool)
+			city = self.cities[infected_card]
+			city.infect(self.disease_pool, city.color)

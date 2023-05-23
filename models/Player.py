@@ -1,4 +1,5 @@
 from .constances import HAND_LIMIT, NUMBER_CARDS_FOR_CURE
+
 class Player:
 
 	def __init__(self):
