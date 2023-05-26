@@ -27,7 +27,6 @@ class Bord:
 			   	    		   'treat_disease' : self.treat_disease,
 				   			   'build_a_research_station' : self.build_a_research_station}
 		self.action_option = [action_name for action_name in self.player_actions.keys()]
-
 		self.run_game(num_player)
 
 	def __str__(self):
