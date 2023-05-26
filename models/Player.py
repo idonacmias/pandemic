@@ -6,63 +6,46 @@ class Player:
 		self.name = input('player name: ')
 		self.cards = []
 		self.location = ''
-		self.actions = {'discover_cure' : self.discover_cure, 
-		   				'share_knowlege' : self.share_knowlege,
-				   		'treat_disease' : self.treat_disease,
-				   		'build_a_research_station' : self.build_a_research_station}
 
 	def __str__(self):
 		cards = "\n".join([str(i) + ')' + card['name'] for i, card in enumerate(self.cards)])
 		return f'''{self.name} in {self.location.name} \nholds:\n{cards}'''
 
-	def do_action(self, cities):
-		my_action = self.choose_actions()
-		self.actions[my_action]()
-		print(f'Player {self.name} did an action!')
-
-	
-	def choose_actions(self): 
-		actions = [action_name for action_name in self.actions.keys()]
-		action_num = input(''.join([f'{i}) {action_name} \n' for i, action_name in enumerate(actions)]))
-		if action_num.isnumeric():
-			action_num = int(action_num)
-			if action_num >= 0 and action_num < len(actions):
-				return actions[action_num]
-
-		print('not a valid action')
-		return self.choose_actions()
-
 	def discover_cure(self):
 		print('discover_cure')
+
 		if not self.location.resarch_station:
 			print('not in reserch stetion')
-			return self.choose_actions()
+			return None
 
 		elif len(self.cards) < NUMBER_CARDS_FOR_CURE:
 			print('not enugh cards')
-			return self.choose_actions()
+			return None
+
+		elif not self.is_enugh_same_coler_cards():
+			print('not enugh cards of the same color')
+			return None
 
 		else:
 			print('start cure discaver')
 			cards_for_cure = self.choose_cards(NUMBER_CARDS_FOR_CURE)
 			cards_colors = [card['color'] for card in cards_for_cure]
 			if len(set(cards_colors)) != 1:
+				self.cards += cards_for_cure
 				print('cards are not the same color')
-				return self.choose_actions()
+				return None
 			
 			else:
 				print(f'cure discoverd for {cards_colors[0]}')
+				return cards_colors[0]
+
+	def is_enugh_same_coler_cards(self):
+		color_cards = [card['color'] for card in self.cards]
+		for color in color_cards:
+			if(color_cards.count(color) >= NUMBER_CARDS_FOR_CURE):
+				return True
 		
-
-
-	def choose_cards(self, num_of_cards):
-		chosen_cards = []
-		while num_of_cards > 0:
-			card_num = self.choose_a_card()
-			chosen_cards.append(self.cards.pop(card_num))
-			num_of_cards -= 1
-	
-		return chosen_cards
+		return False
 
 
 	def share_knowlege(self):
@@ -83,6 +66,15 @@ class Player:
 			discard_pile_temp.append(self.cards.pop(card_num))
 
 		return discard_pile_temp
+
+	def choose_cards(self, num_of_cards):
+		chosen_cards = []
+		while num_of_cards > 0:
+			card_num = self.choose_a_card()
+			chosen_cards.append(self.cards.pop(card_num))
+			num_of_cards -= 1
+	
+		return chosen_cards
 
 	def choose_a_card(self):
 		print('choose a card:')
